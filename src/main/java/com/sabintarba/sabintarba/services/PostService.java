@@ -27,7 +27,7 @@ public class PostService {
 
         post.setPostedAt(new Date());
 
-        Optional<User> postedByUser = userRepository.findById(userId);
+        Optional<User> postedByUser = this.userRepository.findById(userId);
 
         if(postedByUser.isPresent()){
             post.setPostedBy(postedByUser.get());
@@ -52,5 +52,11 @@ public class PostService {
 
     public List<Post> getPosts() {
         return this.postRepository.findAllByOrderByPostedAtDesc();
+    }
+
+    public String deletePostById(String id) {
+        this.postRepository.deleteById(id);
+
+        return new JSONObject().put("status", "success").put("statusMessage", "Post has been deleted!").toString();
     }
 }

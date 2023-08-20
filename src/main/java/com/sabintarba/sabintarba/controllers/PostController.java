@@ -3,6 +3,7 @@ package com.sabintarba.sabintarba.controllers;
 import com.sabintarba.sabintarba.crypto.AES;
 import com.sabintarba.sabintarba.models.Post;
 import com.sabintarba.sabintarba.services.PostService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,16 @@ public class PostController {
         if(!aes.isAuthorizedRequest(token)) return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 
         String response = this.postService.getPostById(id);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePostById(@RequestHeader("token") String token, @PathVariable String id){
+        if(!aes.isAuthorizedRequest(token)) return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+
+        String response = this.postService.deletePostById(id);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

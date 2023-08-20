@@ -22,7 +22,7 @@ public class UserService {
     public String saveUser(User user){
 
         try {
-            userRepository.save(user);
+            this.userRepository.save(user);
             return new JSONObject().put("status", "success").put("statusMessage", "Your account has been successfully created!").toString();
 
         } catch(DuplicateKeyException emailIndexException){
@@ -60,7 +60,7 @@ public class UserService {
 
     public String updateUser(User user){
         try {
-            User savedUser = userRepository.save(user);
+            User savedUser = this.userRepository.save(user);
             return new JSONObject().put("status", "success").put("savedUser", savedUser.toJSONObject()).put("statusMessage", "Profile has been updated!").toString();
 
         } catch(DuplicateKeyException emailIndexException){
@@ -70,7 +70,7 @@ public class UserService {
 
     public String removeProfilePicture(String id) {
 
-        Optional<User> userFound = userRepository.findById(id);
+        Optional<User> userFound = this.userRepository.findById(id);
 
         if(userFound.isEmpty()){
             return new JSONObject().put("status", "fail").put("statusMessage", "Something went wrong!").toString();
@@ -79,11 +79,8 @@ public class UserService {
         User user = userFound.get();
         user.setProfilePicture(null);
 
-        userRepository.save(user);
+        this.userRepository.save(user);
 
         return new JSONObject().put("status", "success").put("statusMessage", "Profile picture has been removed!").toString();
-
-
-
     }
 }
