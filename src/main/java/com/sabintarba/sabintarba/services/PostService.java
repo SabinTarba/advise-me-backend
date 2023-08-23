@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -58,5 +59,9 @@ public class PostService {
         this.postRepository.deleteById(id);
 
         return new JSONObject().put("status", "success").put("statusMessage", "Post has been deleted!").toString();
+    }
+
+    public List<Post> getPostsByUserId(String userId){
+        return this.postRepository.findAll().stream().filter(post -> post.getPostedBy().getId().equals(userId)).collect(Collectors.toList());
     }
 }

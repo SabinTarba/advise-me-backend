@@ -2,6 +2,7 @@ package com.sabintarba.sabintarba.services;
 
 
 import com.sabintarba.sabintarba.models.User;
+import com.sabintarba.sabintarba.repositories.PostRepository;
 import com.sabintarba.sabintarba.repositories.UserRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +10,15 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PostRepository postRepository;
 
     public List<User> getUsers() {
         return this.userRepository.findAll();
@@ -33,8 +37,10 @@ public class UserService {
     public String getUserById(String id) {
         Optional<User> userOptional = this.userRepository.findById(id);
 
+        int totalPosts = postRepository.findAllByOrderByPostedAtDesc().stream().filter(post -> post.getPostedBy().getId().equals(id)).toList().size();
+
         if(userOptional.isPresent()) {
-            return new JSONObject().put("status", "success").put("user", userOptional.get().toJSONObject()).toString();
+            return new JSONObject().put("status", "success").put("user", userOptional.get().toJSONObject().put("totalPosts", totalPosts)).toString();
 
         } else {
             return new JSONObject().put("status", "fail").put("statusMessage", "User not found!").toString();

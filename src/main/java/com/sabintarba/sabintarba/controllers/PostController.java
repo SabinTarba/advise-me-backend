@@ -58,4 +58,14 @@ public class PostController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @CrossOrigin
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Post>> getPostsByUserId(@RequestHeader("token") String token, @PathVariable String userId){
+        if(!aes.isAuthorizedRequest(token)) return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+
+        List<Post> response = this.postService.getPostsByUserId(userId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
